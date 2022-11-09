@@ -1,7 +1,7 @@
-from stimpl.runtime import run_stimpl
-from stimpl.expression import *
-from stimpl.types import *
 from stimpl.errors import *
+from stimpl.expression import *
+from stimpl.runtime import run_stimpl
+from stimpl.types import *
 
 
 class TestingError(Exception):

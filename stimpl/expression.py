@@ -1,4 +1,5 @@
 from stimpl.errors import InterpSyntaxError, InterpTypeError, pretty_type
+
 """
 Expressions
 """

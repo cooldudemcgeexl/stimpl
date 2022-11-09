@@ -4,7 +4,7 @@
 
 STIMPL is a Turing-complete imperative programming language -- it includes dynamically typed variables, mathematical expressions, (basic) console IO, loops, and conditionals. Though the binding of variables to types is done at runtime (in particular, the time of the first assignment), the language is strongly typed -- type errors are always detected! STIMPL has no scopes and no functions.
 
-In STIMPL, *everything* is an expression. There are no statements. The *syntax* of STIMPL might look a little odd. It's not like any other programming language you might have seen. That's because the syntax that you are going to write does not have to be the *only* syntax that STIMPL supports. Think about the syntax that you are going to learn for STIMPL as the syntax you would use to write down (*serialize*) the abstract syntax tree for a valid STIMPL program. As we discussed in the Module on Syntax and Grammars, a parser will turn the source code for a program into a tree that represents the different components of a program. When you write your STIMPL programs in the syntax defined here, you are allowing us to skip the step of writing the grammar/parser/etc and giving us the freedom to jump to the fun part of building a language -- implementing its behavior!
+In STIMPL, _everything_ is an expression. There are no statements. The _syntax_ of STIMPL might look a little odd. It's not like any other programming language you might have seen. That's because the syntax that you are going to write does not have to be the _only_ syntax that STIMPL supports. Think about the syntax that you are going to learn for STIMPL as the syntax you would use to write down (_serialize_) the abstract syntax tree for a valid STIMPL program. As we discussed in the Module on Syntax and Grammars, a parser will turn the source code for a program into a tree that represents the different components of a program. When you write your STIMPL programs in the syntax defined here, you are allowing us to skip the step of writing the grammar/parser/etc and giving us the freedom to jump to the fun part of building a language -- implementing its behavior!
 
 Here is a short example STIMPL program that assigns the value of `4` (as an integer type which results from adding together two literal `2`s) to a variable `four`:
 
@@ -43,7 +43,7 @@ Sequence(Ren(), Ren(), Ren())
 Program(Ren(), Ren(), Ren())
 ```
 
-are exactly the same. In general, the syntax for a program or sequence is `Program(`_expression_`[, `_expression_`[,...]])` or `Sequence(`_expression_`[, `_expression_`[,...]])`, respectively, where _expression_ is any expression (even another program or sequence because, again, *everything* in STIMPL is an expression!).
+are exactly the same. In general, the syntax for a program or sequence is `Program(`_expression_`[, `_expression_`[,...]])` or `Sequence(`_expression_`[, `_expression_`[,...]])`, respectively, where _expression_ is any expression (even another program or sequence because, again, _everything_ in STIMPL is an expression!).
 
 The value and type of a sequence/program of expressions are the value and type of the final expression in the sequence/program. For example:
 
@@ -135,7 +135,7 @@ will print
 Else
 ```
 
-Not to sound like a broken record, but because everything in STIMPL is an expression, if expressions have a value and a type. The value and type of the expression in the example above are `"Else"` and string, respectively. In general, the syntax for an if expression is `If(condition, then, else)` where `condition` is any expression whose type is boolean and `then` and `else` are expressions. If you don't want to do anything in the case that `condition` is false, use `Ren()` as the `else` expression.
+Not to sound like a broken record, but because everything in STIMPL is an expression, if expressions have a value and a type. The value and type of the expression in the example above are `"Else"` and string, respectively. In general, the syntax for an if expression is `If(condition, then, else)` where `condition` is any expression whose type is boolean and `then` and `else` are expressions. If you don't want to do anything in the case that `condition` is false, use `Ren()` as the `else` expression.
 
 And, don't forget loops:
 
@@ -265,9 +265,9 @@ will raise an `InterpSyntaxError` at runtime.
 4.  Unit is equal to unit.
 5.  Boolean operators behave "as usual".
 6.  Add, Subtract, Multiply and Divide operators work "as usual" on floating-point values.
-7. The divide operator performs integer division when its parameters are integers (_e.g._, 5/10 = 0). When the operands to a division operator are both floating-points, then the result has "precision" (_e.g._, 5.0 / 10.0 = 0.5).
-8. An attempt to divide by zero (either floating-point or integer) raises an `InterpMathError`.
-9. Add operator performs string concatenation when its operands are string values.
+7.  The divide operator performs integer division when its parameters are integers (_e.g._, 5/10 = 0). When the operands to a division operator are both floating-points, then the result has "precision" (_e.g._, 5.0 / 10.0 = 0.5).
+8.  An attempt to divide by zero (either floating-point or integer) raises an `InterpMathError`.
+9.  Add operator performs string concatenation when its operands are string values.
 10. Operands are evaluated left-to-right.
 11. There is _no_ short-circuit evaluation.
 12. The body of a while loop is repeatedly executed until the condition becomes false.
@@ -282,7 +282,7 @@ will raise an `InterpSyntaxError` at runtime.
 5. The value and type of an if expression is the value and type of the last expression in the sequence of expressions executed based on the value of the condition.
 6. The value and type of a while expression is false and boolean.
 7. The value and type of a program/sequence expression is the value and type of the last expression in the program/sequence's body
-      - In the case where the body is empty, the value and the type of the program/sequence expression is ren and unit, respectively.
+   - In the case where the body is empty, the value and the type of the program/sequence expression is ren and unit, respectively.
 
 ### STIMPL Implementation
 
@@ -301,6 +301,7 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
 ```
 
 It returns a tuple that contains
+
 1. (optional) value of the expression evaluated
 2. that value's type
 3. the (perhaps) updated state of the STIMPL program
@@ -339,6 +340,7 @@ There are two pre-defined exceptions for you to use to signal a program error --
 ## Types
 
 There are classes already defined for the integer, floating-point, string and boolean types (`stimpl/types.py`). These classes already have built-in functionality for equality testing. In other words,
+
 ```
   FloatingPoint() == FloatingPoint()
   String() == String()
@@ -366,40 +368,39 @@ There are classes already implemented to hold the structure of the binary, unary
 
 Your assignment is to build on the provided STIMPL code and complete the implementation of the interpreter. All pieces of the interpreter where you need to write code are listed with `TODO` markers. For instance,
 
-
 ```Python
 def get_value(self, variable_name) -> Any:
       """ TODO: Implement. """
       return None
 ```
 
-*Note*: Where there are `TODO`s, any return values are placeholders only. You may need to modify return values as part of your implementation.
+_Note_: Where there are `TODO`s, any return values are placeholders only. You may need to modify return values as part of your implementation.
 
 You are responsible for implementing:
 
-| Class | Method | Expression Type |File |
-| -- | -- | -- | -- |
-| `State` | `get_value` | N/A | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Sequence` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Program` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Subtract` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Multiply` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Divide` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Or` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Not` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `If` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Lte` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Gt` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Gte` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Eq` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `Ne` | `stimpl/runtime.py` |
-| N/A | `evaluate` | `While` | `stimpl/runtime.py` |
+| Class   | Method      | Expression Type | File                |
+| ------- | ----------- | --------------- | ------------------- |
+| `State` | `get_value` | N/A             | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Sequence`      | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Program`       | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Subtract`      | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Multiply`      | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Divide`        | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Or`            | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Not`           | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `If`            | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Lte`           | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Gt`            | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Gte`           | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Eq`            | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `Ne`            | `stimpl/runtime.py` |
+| N/A     | `evaluate`  | `While`         | `stimpl/runtime.py` |
 
 ## Getting Started
 
 The first step is to download the skeleton code. It is available on GitHub at [https://github.com/hawkinsw/stimpl](https://github.com/hawkinsw/stimpl). If you are new to git/github, check out this [handbook](https://guides.github.com/introduction/git-handbook/) from GitHub or the project's [website](http://git-scm.com/).
 
-The next step is to make sure that you have Python 3.10 installed and available. Python 3.10 is a very new version of Python and is a *requirement* for this assignment. If you do not have Python 3.10 you will not be able to complete this assignment. If you have trouble installing/configuring Python 3.10 on your computer, please reach out to me!
+The next step is to make sure that you have Python 3.10 installed and available. Python 3.10 is a very new version of Python and is a _requirement_ for this assignment. If you do not have Python 3.10 you will not be able to complete this assignment. If you have trouble installing/configuring Python 3.10 on your computer, please reach out to me!
 
 The final step before you get started programming is to make sure that you can execute the code in `shakedown_stimpl.py`. If you have a sane Python 3.10 installation and everything configured correctly, you should see
 
@@ -417,25 +418,24 @@ All tests ran successfully!
 
 printed on the screen! In fact, if you see that message, you will know that your grade will be at least 80% (see below).
 
-That said, there are *many* tests in that file and the output can be overwhelming. The best way to work on this project is to implement the evaluation functionality for different expressions one at a time. For each expression type that you implement, write very small, targeted STIMPL programs that use that expression and don't move on until your code works.
+That said, there are _many_ tests in that file and the output can be overwhelming. The best way to work on this project is to implement the evaluation functionality for different expressions one at a time. For each expression type that you implement, write very small, targeted STIMPL programs that use that expression and don't move on until your code works.
 
 ## Grading
 
 Your grade will be calculated (out of 100 total possible points) according to the following rubric:
 
-|Points|Category|Description|
-|---|---|---|
-|  80 | Implementation completeness  |  You will receive up to 80 points depending on how many of the supplied tests pass on your implementation. See `stimply/test.py` for the exact relationship between points and tests. |
-|  10 | Robustness  | You will receive up to 10 points depending on whether your implementation passes additional robustness tests.  |
-| 10 | Hygiene | You will receive up to 10 points depending on the hygiene of your code -- good comments, good style, good variable names, modularity, etc. |
-
+| Points | Category                    | Description                                                                                                                                                                          |
+| ------ | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 80     | Implementation completeness | You will receive up to 80 points depending on how many of the supplied tests pass on your implementation. See `stimply/test.py` for the exact relationship between points and tests. |
+| 10     | Robustness                  | You will receive up to 10 points depending on whether your implementation passes additional robustness tests.                                                                        |
+| 10     | Hygiene                     | You will receive up to 10 points depending on the hygiene of your code -- good comments, good style, good variable names, modularity, etc.                                           |
 
 ## What And How To Submit
 
 All submissions for this assignment will be made through Gradescope, as usual. Like the first assignment, Gradescope will be relatively picky about how you submit. The best advice I can give follows:
 
-1. Create a zip file that contains all your source code (yes, *all* your source code, even the code contained in the skeleton). 
-1. In that zip file, make sure that `shakedown_stimpl.py` and `test_stimpl.py` are in the *root* folder.
+1. Create a zip file that contains all your source code (yes, _all_ your source code, even the code contained in the skeleton).
+1. In that zip file, make sure that `shakedown_stimpl.py` and `test_stimpl.py` are in the _root_ folder.
 1. Submit to Gradescope by dragging/dropping that zip file on the modal dialog box that pops up when you click the `Submit` button. Your dialog box should look like the one shown below).
 
 ![How your submission modal dialog box should look when you submit to Gradescope.](./assets/submission-modal.png)
