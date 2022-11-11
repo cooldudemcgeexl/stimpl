@@ -246,13 +246,28 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                     result = not expr_value
                 case _:
                     raise InterpTypeError(
-                        "Cannot perform logical not on non-boolean operands."
+                        "Cannot perform logical Not on non-boolean operands."
                     )
             return (result, expr_type, new_state)
 
         case If(condition=condition, true=true, false=false):
             """ TODO: Implement. """
-            pass
+            cond_value, cond_type, new_state = evaluate(condition, state)
+            match cond_type:
+                case Boolean():
+                    cond_result = cond_value
+                case _:
+                    raise InterpTypeError(
+                        "Cannot perform If expression on non-boolean operands."
+                    )
+            
+            if cond_result:
+                result_value, result_type, new_state = evaluate(true, new_state)
+            else:
+                result_value, result_type, new_state = evaluate(false, new_state)
+
+            return (result_value, result_type, new_state)
+            
 
         case Lt(left=left, right=right):
             left_value, left_type, new_state = evaluate(left, state)
@@ -277,7 +292,25 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
 
         case Lte(left=left, right=right):
             """ TODO: Implement. """
-            pass
+            left_value, left_type, new_state = evaluate(left, state)
+            right_value, right_type, new_state = evaluate(right, new_state)
+
+            result = None
+
+            if left_type != right_type:
+                raise InterpTypeError(f"""Mismatched types for Lt:
+            Cannot compare {left_type} to {right_type}""")
+
+            match left_type:
+                case Integer() | Boolean() | String() | FloatingPoint():
+                    result = left_value <= right_value
+                case Unit():
+                    result = False
+                case _:
+                    raise InterpTypeError(
+                        f"Cannot perform <= on {left_type} type.")
+
+            return (result, Boolean(), new_state)
 
         case Gt(left=left, right=right):
             """ TODO: Implement. """
