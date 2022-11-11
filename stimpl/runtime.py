@@ -27,7 +27,7 @@ class State(object):
         Search through state recursively to find the variable.
         Will return the newest instance, since the whole state is
         a stack. 
-        
+
         A variable being absent will lead to hitting the 
         special EmptyState object at the end of the stack, returning a
         value of None.
@@ -260,14 +260,15 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                     raise InterpTypeError(
                         "Cannot perform If expression on non-boolean operands."
                     )
-            
+
             if cond_result:
-                result_value, result_type, new_state = evaluate(true, new_state)
+                result_value, result_type, new_state = evaluate(
+                    true, new_state)
             else:
-                result_value, result_type, new_state = evaluate(false, new_state)
+                result_value, result_type, new_state = evaluate(
+                    false, new_state)
 
             return (result_value, result_type, new_state)
-            
 
         case Lt(left=left, right=right):
             left_value, left_type, new_state = evaluate(left, state)
@@ -283,6 +284,7 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                 case Integer() | Boolean() | String() | FloatingPoint():
                     result = left_value < right_value
                 case Unit():
+                    # Unit always equals itself
                     result = False
                 case _:
                     raise InterpTypeError(
@@ -305,7 +307,8 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                 case Integer() | Boolean() | String() | FloatingPoint():
                     result = left_value <= right_value
                 case Unit():
-                    result = True 
+                    # Unit always equals itself
+                    result = True
                 case _:
                     raise InterpTypeError(
                         f"Cannot perform <= on {left_type} type.")
@@ -327,6 +330,7 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                 case Integer() | Boolean() | String() | FloatingPoint():
                     result = left_value > right_value
                 case Unit():
+                    # Unit always equals itself
                     result = False
                 case _:
                     raise InterpTypeError(
@@ -350,6 +354,7 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                 case Integer() | Boolean() | String() | FloatingPoint():
                     result = left_value >= right_value
                 case Unit():
+                    # Unit always equals itself
                     result = True
                 case _:
                     raise InterpTypeError(
@@ -378,7 +383,6 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                         f"Cannot perform == on {left_type} type.")
 
             return (result, Boolean(), new_state)
-
 
         case Ne(left=left, right=right):
             """ TODO: Implement. """
