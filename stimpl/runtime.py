@@ -23,7 +23,15 @@ class State(object):
         return State(variable_name, variable_value, variable_type, self)
 
     def get_value(self, variable_name) -> Any:
-        """TODO: fix??"""
+        """
+        Search through state recursively to find the variable.
+        Will return the newest instance, since the whole state is
+        a stack. 
+        
+        A variable being absent will lead to hitting the 
+        special EmptyState object at the end of the stack, returning a
+        value of None.
+        """
 
         if variable_name == self.variable_name:
             return self.value
@@ -82,7 +90,11 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (printable_value, printable_type, new_state)
 
         case Sequence(exprs=exprs) | Program(exprs=exprs):
-            """ TODO: Implement. """
+            """ 
+            Iterate over Sequence/Program since it's a tuple of exprs.
+            This effectively gives us LtR evaluation.
+            Neat!
+            """
             ret_value = None
             ret_type = Unit()
             for expr in exprs:
@@ -177,7 +189,12 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             Cannot divide {left_type} with {right_type}""")
 
             match left_type:
-                case Integer() | FloatingPoint():
+                case Integer():
+                    if not right_result:
+                        raise InterpMathError(f"""Invalid math operation for Divide:
+                        Cannot divide by zero.""")
+                    result = left_result // right_result
+                case FloatingPoint():
                     if not right_result:
                         raise InterpMathError(f"""Invalid math operation for Divide:
                         Cannot divide by zero.""")
@@ -231,6 +248,7 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                     raise InterpTypeError(
                         "Cannot perform logical not on non-boolean operands."
                     )
+            return (result, expr_type, new_state)
 
         case If(condition=condition, true=true, false=false):
             """ TODO: Implement. """
