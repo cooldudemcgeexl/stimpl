@@ -409,13 +409,12 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
         case While(condition=condition, body=body):
             """
             Recursively calls itself, evaluating condition first. 
-            
+
             If the condition is true, update the state, then evaluate body and update state.
             Then call evaulate on the entire expression again, with updated state.
 
             If the condition is false, return the condition value and type with the new state.
             """
-
 
             cond_value, cond_type, new_state = evaluate(condition, state)
             match cond_type:
@@ -425,13 +424,13 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                     raise InterpTypeError(
                         "Cannot perform While expression on non-boolean condition."
                     )
-            
+
             if cond_result:
                 # Update the state with the result of the body
                 # Don't really need the values, since the loop
                 # condition must be run again.
                 _, _, new_state = evaluate(body, new_state)
-                
+
                 # Re-evaluate the entire expression with the new state
                 return evaluate(expression, new_state)
             else:
