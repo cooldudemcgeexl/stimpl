@@ -22,7 +22,7 @@ class State(object):
     def set_value(self, variable_name, variable_value, variable_type) -> 'State':
         return State(variable_name, variable_value, variable_type, self)
 
-    def get_value(self, variable_name) -> Any:
+    def get_value(self, variable_name) -> tuple[Expr,Type] | None:
         """
         Search through state recursively to find the variable.
         Will return the newest instance, since the whole state is
