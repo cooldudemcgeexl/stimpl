@@ -95,6 +95,8 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             This effectively gives us LtR evaluation.
             Neat!
             """
+            # Placeholder values to prevent reference before assignment errors
+            # with an empty sequence.
             ret_value = None
             ret_type = Unit()
             for expr in exprs:
@@ -144,7 +146,6 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (result, left_type, new_state)
 
         case Subtract(left=left, right=right):
-            """ TODO: Implement. """
             result = 0
             left_result, left_type, new_state = evaluate(left, state)
             right_result, right_type, new_state = evaluate(right, new_state)
@@ -179,7 +180,6 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (result, left_type, new_state)
 
         case Divide(left=left, right=right):
-            """ TODO: Implement. """
             result = 0
             left_result, left_type, new_state = evaluate(left, state)
             right_result, right_type, new_state = evaluate(right, new_state)
@@ -193,11 +193,13 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
                     if not right_result:
                         raise InterpMathError(f"""Invalid math operation for Divide:
                         Cannot divide by zero.""")
+                    # Do integer division for int types
                     result = left_result // right_result
                 case FloatingPoint():
                     if not right_result:
                         raise InterpMathError(f"""Invalid math operation for Divide:
                         Cannot divide by zero.""")
+                    # Do floating point division for float types
                     result = left_result / right_result
                 case _:
                     raise InterpTypeError(f"""Cannot divide {left_type}s""")
@@ -221,7 +223,6 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (result, left_type, new_state)
 
         case Or(left=left, right=right):
-            """ TODO: Implement. """
             left_value, left_type, new_state = evaluate(left, state)
             right_value, right_type, new_state = evaluate(right, new_state)
 
@@ -238,7 +239,6 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (result, left_type, new_state)
 
         case Not(expr=expr):
-            """ TODO: Implement. """
             expr_value, expr_type, new_state = evaluate(expr, state)
 
             match expr_type:
@@ -293,7 +293,6 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (result, Boolean(), new_state)
 
         case Lte(left=left, right=right):
-            """ TODO: Implement. """
             left_value, left_type, new_state = evaluate(left, state)
             right_value, right_type, new_state = evaluate(right, new_state)
 
@@ -370,13 +369,14 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             result = None
 
             if left_type != right_type:
-                raise InterpTypeError(f"""Mismatched types for Gte:
+                raise InterpTypeError(f"""Mismatched types for Eq:
             Cannot compare {left_type} to {right_type}""")
 
             match left_type:
                 case Integer() | Boolean() | String() | FloatingPoint():
                     result = left_value == right_value
                 case Unit():
+                    # Unit always equals itself
                     result = True
                 case _:
                     raise InterpTypeError(
@@ -385,21 +385,20 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (result, Boolean(), new_state)
 
         case Ne(left=left, right=right):
-            """ TODO: Implement. """
-            """ TODO: Implement. """
             left_value, left_type, new_state = evaluate(left, state)
             right_value, right_type, new_state = evaluate(right, new_state)
 
             result = None
 
             if left_type != right_type:
-                raise InterpTypeError(f"""Mismatched types for Gte:
+                raise InterpTypeError(f"""Mismatched types for Ne:
             Cannot compare {left_type} to {right_type}""")
 
             match left_type:
                 case Integer() | Boolean() | String() | FloatingPoint():
                     result = left_value != right_value
                 case Unit():
+                    # Unit always equals itself
                     result = False
                 case _:
                     raise InterpTypeError(
@@ -408,15 +407,41 @@ def evaluate(expression: Expr, state: State) -> Tuple[Optional[Any], Type, State
             return (result, Boolean(), new_state)
 
         case While(condition=condition, body=body):
-            """ TODO: Implement. """
-            pass
+            """
+            Recursively calls itself, evaluating condition first. 
+            
+            If the condition is true, update the state, then evaluate body and update state.
+            Then call evaulate on the entire expression again, with updated state.
+
+            If the condition is false, return the condition value and type with the new state.
+            """
+
+
+            cond_value, cond_type, new_state = evaluate(condition, state)
+            match cond_type:
+                case Boolean():
+                    cond_result = cond_value
+                case _:
+                    raise InterpTypeError(
+                        "Cannot perform While expression on non-boolean condition."
+                    )
+            
+            if cond_result:
+                # Update the state with the result of the body
+                # Don't really need the values, since the loop
+                # condition must be run again.
+                _, _, new_state = evaluate(body, new_state)
+                
+                # Re-evaluate the entire expression with the new state
+                return evaluate(expression, new_state)
+            else:
+                return (cond_value, cond_type, new_state)
 
         case _:
             raise InterpSyntaxError("Unhandled!")
-    pass
 
 
-def run_stimpl(program, debug=True):
+def run_stimpl(program, debug=False):
     state = EmptyState()
     program_value, program_type, program_state = evaluate(program, state)
 
